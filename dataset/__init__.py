@@ -2,12 +2,14 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from PIL import Image
+from datasets import load_dataset
 
 from dataset.caption_dataset import re_train_dataset, re_eval_dataset, pretrain_dataset
 from dataset.nlvr_dataset import nlvr_dataset
 from dataset.ve_dataset import ve_dataset
 from dataset.vqa_dataset import vqa_dataset
 from dataset.grounding_dataset import grounding_dataset
+from dataset.bi_cls_dataset import bi_cls_dataset
 
 from dataset.randaugment import RandomAugment
 
@@ -75,7 +77,14 @@ def create_dataset(dataset, config):
             ])         
         train_dataset = grounding_dataset(config['train_file'], train_transform, config['image_root'], mode='train')       
         test_dataset = grounding_dataset(config['test_file'], test_transform, config['image_root'], mode='test')             
-        return train_dataset, test_dataset    
+        return train_dataset, test_dataset
+    
+    elif dataset=='bi-cls':
+        dataset = load_dataset(config['dataset_args'])
+        train_dataset = bi_cls_dataset(dataset['train'], train_transform)  
+        val_dataset = bi_cls_dataset(dataset['validation'], test_transform)  
+        test_dataset = bi_cls_dataset(dataset['test'], test_transform)                
+        return train_dataset, val_dataset, test_dataset
     
 
 def vqa_collate_fn(batch):
