@@ -21,7 +21,7 @@ def create_dataset(dataset, config):
             transforms.RandomResizedCrop(config['image_res'],scale=(0.2, 1.0), interpolation=Image.BICUBIC),
             transforms.RandomHorizontalFlip(),
             RandomAugment(2,7,isPIL=True,augs=['Identity','AutoContrast','Equalize','Brightness','Sharpness',
-                                              'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Rotate']),     
+                                              'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Rotate']),   
             transforms.ToTensor(),
             normalize,
         ])    
@@ -80,7 +80,22 @@ def create_dataset(dataset, config):
         return train_dataset, test_dataset
     
     elif dataset=='bi-cls':
-        dataset = load_dataset(config['dataset_args'])
+        train_transform = transforms.Compose([                        
+                transforms.RandomResizedCrop(config['image_res'],scale=(0.5, 1.0), interpolation=Image.BICUBIC),
+                transforms.Grayscale(num_output_channels=3),
+                transforms.RandomHorizontalFlip(),
+                RandomAugment(2,7,isPIL=True,augs=['Identity','AutoContrast','Equalize','Brightness','Sharpness',
+                                                'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Rotate']),
+                transforms.ToTensor(),
+                normalize,
+            ])  
+        test_transform = transforms.Compose([
+            transforms.Resize((config['image_res'],config['image_res']),interpolation=Image.BICUBIC),
+            transforms.Grayscale(num_output_channels=3),
+            transforms.ToTensor(),
+            normalize,
+            ])   
+        dataset = load_dataset(*config['dataset_args'])
         train_dataset = bi_cls_dataset(dataset['train'], train_transform)  
         val_dataset = bi_cls_dataset(dataset['validation'], test_transform)  
         test_dataset = bi_cls_dataset(dataset['test'], test_transform)                
