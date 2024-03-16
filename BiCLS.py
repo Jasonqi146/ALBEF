@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
 
-from models.model_ve import ALBEF
+from models.model_bi_cls import ALBEF
 from models.vit import interpolate_pos_embed
 from models.tokenization_bert import BertTokenizer
 
@@ -86,7 +86,7 @@ def evaluate(model, data_loader, tokenizer, device, config):
         text_inputs = tokenizer(text, padding='longest', return_tensors="pt").to(device)  
 
         prediction = model(images, text_inputs, targets=targets, train=False)  
- 
+        # import pdb; pdb.set_trace()
         _, pred_class = prediction.max(1)
         accuracy = (targets==pred_class).sum() / targets.size(0)
 

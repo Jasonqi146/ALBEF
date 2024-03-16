@@ -1,10 +1,9 @@
 from torch.utils.data import Dataset
 from dataset.utils import pre_caption
-from datasets import load_dataset
 
 
 class bi_cls_dataset(Dataset):
-    def __init__(self, dataset, transform, max_words=100):
+    def __init__(self, dataset, transform, max_words=1000):
         self.dataset = dataset
         self.transform = transform
         self.max_words = max_words
@@ -13,7 +12,7 @@ class bi_cls_dataset(Dataset):
     def __len__(self):
         return len(self.dataset)
     
-    def __getitem__(self, index):    
+    def __getitem__(self, index):
         
         data_point = self.dataset[index]
         image = self.transform(data_point['image'])
