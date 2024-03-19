@@ -3,4 +3,9 @@
 .DS_Store
 *.pth
 output/*
+sarc_data/dataset_image*
+archive/*
+*.log
+sarc_data/
+
 ```

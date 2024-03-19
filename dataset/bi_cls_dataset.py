@@ -16,7 +16,8 @@ class bi_cls_dataset(Dataset):
         
         data_point = self.dataset[index]
         image = self.transform(data_point['image'])
-        sentence = pre_caption(data_point['from_description'], self.max_words)
+        text = "A: {} B: {}".format(data_point['caption_choices'][0], data_point['caption_choices'][1])
+        sentence = pre_caption(text, self.max_words)
         
         return image, sentence, self.labels[data_point['label']]
     
